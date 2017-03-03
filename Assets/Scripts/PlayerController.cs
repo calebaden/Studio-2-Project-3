@@ -4,17 +4,95 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    LevelController levelController;
+    CameraScript cameraScript;
+
     public float moveSpeed;
+    public float laneSpeed;
+    public bool isChangingLane;
+    public GameObject target;
 
 	// Use this for initialization
 	void Start ()
     {
-		
+        levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
+        cameraScript = GetComponentInChildren<CameraScript>();
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        // If the player is not changing lanes, move forwards at the movement speed
+        if (!isChangingLane)
+        {
+            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        }
+        // If the player is changing lanes, move towards the target
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed * Time.deltaTime);
+        }
 	}
+
+    // Function that is called while colliding with another collider
+    private void OnTriggerStay(Collider otherObject)
+    {
+        if (otherObject.gameObject.tag == "Junction")                                   // Check if the other object is a junction
+        {
+            JunctionScript junctionScript = otherObject.GetComponent<JunctionScript>();
+
+            if (!junctionScript.hasChosen)                                              // Check the junction script to see if the next area has already been chosen
+            {
+                if (Input.GetKey("a"))                                                  // If the player presses the left direction while in the trigger, send them to the left area
+                {
+                    target = levelController.leftTunnels[junctionScript.currentArea];   // Set the target to the left tunnel in the current area
+                    junctionScript.hasChosen = true;                                    // Set the has chosen variable to true
+                }
+                else if (Input.GetKey("d"))                                             // If the player presses the right direction while in the trigger, send them to the right area
+                {
+                    target = levelController.rightTunnels[junctionScript.currentArea];  // Set the target to the right tunnel in the current area
+                    junctionScript.hasChosen = true;                                    // Set the has chosen variable to true
+                }
+            }
+        }
+    }
+
+    // Function that is called when exiting another collider
+    private void OnTriggerExit(Collider otherObject)
+    {
+        if (otherObject.gameObject.tag == "Junction")
+        {
+            if (!otherObject.GetComponent<JunctionScript>().hasChosen)
+            {
+                int rand = Random.Range(0, 2);                                                                      // Create a random value between 0 and 1 (inclusive)
+                if (rand == 0)
+                {
+                    target = levelController.leftTunnels[otherObject.GetComponent<JunctionScript>().currentArea];  // If the random value is 0, set the target to the left tunnel of the current area
+                }
+                else
+                {
+                    target = levelController.rightTunnels[otherObject.GetComponent<JunctionScript>().currentArea];   // If the random value is 1, set the target to the right tunnel of the current area
+                }
+            }
+
+            // Start changing lane and zoom in the camera
+            isChangingLane = true;
+            cameraScript.isZoomed = true;
+        }
+    }
+
+    // Function that is called when entering another collider
+    private void OnTriggerEnter(Collider otherObject)
+    {
+        if (otherObject.gameObject.tag == "TunnelEntrance")     // Check if the other object is a tunnel entrance
+        {
+            isChangingLane = false;
+            // Load the next area
+        }
+        else if (otherObject.gameObject.tag == "TunnelExit")    // Check if the other object is a tunnel exit
+        {
+            cameraScript.isZoomed = false;
+            // Unload the previous area
+        }
+    }
 }
