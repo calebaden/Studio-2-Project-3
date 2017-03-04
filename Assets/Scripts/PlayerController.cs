@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    LevelController levelController;
+    public LevelController levelController;
     CameraScript cameraScript;
+    GameController gameController;
 
     public float moveSpeed;
-    public float laneSpeed;
     public bool isChangingLane;
     public GameObject target;
 
 	// Use this for initialization
 	void Start ()
     {
-        levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
         cameraScript = GetComponentInChildren<CameraScript>();
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 	}
 	
 	// Update is called once per frame
@@ -39,19 +39,17 @@ public class PlayerController : MonoBehaviour
     {
         if (otherObject.gameObject.tag == "Junction")                                   // Check if the other object is a junction
         {
-            JunctionScript junctionScript = otherObject.GetComponent<JunctionScript>();
-
-            if (!junctionScript.hasChosen)                                              // Check the junction script to see if the next area has already been chosen
+            if (!levelController.hasChosen)                                             // Check the junction script to see if the next area has already been chosen
             {
                 if (Input.GetKey("a"))                                                  // If the player presses the left direction while in the trigger, send them to the left area
                 {
-                    target = levelController.leftTunnels[junctionScript.currentArea];   // Set the target to the left tunnel in the current area
-                    junctionScript.hasChosen = true;                                    // Set the has chosen variable to true
+                    target = levelController.leftTunnel;                                // Set the target to the left tunnel in the current area
+                    levelController.hasChosen = true;                                   // Set the has chosen variable to true
                 }
                 else if (Input.GetKey("d"))                                             // If the player presses the right direction while in the trigger, send them to the right area
                 {
-                    target = levelController.rightTunnels[junctionScript.currentArea];  // Set the target to the right tunnel in the current area
-                    junctionScript.hasChosen = true;                                    // Set the has chosen variable to true
+                    target = levelController.rightTunnel;                               // Set the target to the right tunnel in the current area
+                    levelController.hasChosen = true;                                   // Set the has chosen variable to true
                 }
             }
         }
@@ -62,16 +60,16 @@ public class PlayerController : MonoBehaviour
     {
         if (otherObject.gameObject.tag == "Junction")
         {
-            if (!otherObject.GetComponent<JunctionScript>().hasChosen)
+            if (!levelController.hasChosen)
             {
-                int rand = Random.Range(0, 2);                                                                      // Create a random value between 0 and 1 (inclusive)
+                int rand = Random.Range(0, 2);                                  // Create a random value between 0 and 1 (inclusive)
                 if (rand == 0)
                 {
-                    target = levelController.leftTunnels[otherObject.GetComponent<JunctionScript>().currentArea];  // If the random value is 0, set the target to the left tunnel of the current area
+                    target = levelController.leftTunnel;                        // If the random value is 0, set the target to the left tunnel of the current area
                 }
                 else
                 {
-                    target = levelController.rightTunnels[otherObject.GetComponent<JunctionScript>().currentArea];   // If the random value is 1, set the target to the right tunnel of the current area
+                    target = levelController.rightTunnel;                       // If the random value is 1, set the target to the right tunnel of the current area
                 }
             }
 
@@ -86,13 +84,15 @@ public class PlayerController : MonoBehaviour
     {
         if (otherObject.gameObject.tag == "TunnelEntrance")     // Check if the other object is a tunnel entrance
         {
-            isChangingLane = false;
-            // Load the next area
+            isChangingLane = false;                                                 // Set the changing lane bool to false so the character walks in a straight line
+            otherObject.GetComponent<LoadAreaScript>().areaToLoad.SetActive(true);  // Load the next area that is a game object on the colliders script
+            
         }
-        else if (otherObject.gameObject.tag == "TunnelExit")    // Check if the other object is a tunnel exit
+        else if (otherObject.gameObject.tag == "TunnelExit")            // Check if the other object is a tunnel exit
         {
-            cameraScript.isZoomed = false;
-            // Unload the previous area
+            cameraScript.isZoomed = false;                              // Disable the camera zooming
+            gameController.currentArea.SetActive(false);                // Unload the area just gone
+            gameController.currentArea = levelController.gameObject;    // Set the current are to the area just arrived
         }
     }
 }

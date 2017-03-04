@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    public GameObject[] leftTunnels;
-    public GameObject[] rightTunnels;
+    PlayerController player;
 
-    public GameObject parklandArea;
+    public bool hasChosen;
+
+    public GameObject leftTunnel;
+    public GameObject rightTunnel;
 
 	// Use this for initialization
 	void Start ()
     {
-		
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        player.levelController = this;
 	}
 	
 	// Update is called once per frame

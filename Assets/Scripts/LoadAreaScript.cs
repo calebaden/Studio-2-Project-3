@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JunctionScript : MonoBehaviour
+public class LoadAreaScript : MonoBehaviour
 {
-    public bool hasChosen = false;
-    public int currentArea;
+    public GameObject areaToLoad;
 
 	// Use this for initialization
 	void Start ()
@@ -18,9 +17,4 @@ public class JunctionScript : MonoBehaviour
     {
 		
 	}
-
-    public void NextArea ()
-    {
-
-    }
 }
