@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed;
     public bool isChangingLane;
+    public float tunnelLength;
     public GameObject target;
 
 	// Use this for initialization
@@ -86,6 +87,7 @@ public class PlayerController : MonoBehaviour
         {
             isChangingLane = false;                                                 // Set the changing lane bool to false so the character walks in a straight line
             otherObject.GetComponent<LoadAreaScript>().areaToLoad.SetActive(true);  // Load the next area that is a game object on the colliders script
+            otherObject.GetComponent<LoadAreaScript>().areaToLoad.transform.position = otherObject.transform.position + new Vector3(0, -0.5f, tunnelLength);
             
         }
         else if (otherObject.gameObject.tag == "TunnelExit")            // Check if the other object is a tunnel exit
@@ -93,6 +95,15 @@ public class PlayerController : MonoBehaviour
             cameraScript.isZoomed = false;                              // Disable the camera zooming
             gameController.currentArea.SetActive(false);                // Unload the area just gone
             gameController.currentArea = levelController.gameObject;    // Set the current are to the area just arrived
+        }
+
+        if (otherObject.gameObject.tag == "FrostDisable")
+        {
+            Camera.main.gameObject.GetComponent<FrostController>().isFrosty = false;
+        }
+        else if (otherObject.gameObject.tag == "FrostEnable")
+        {
+            Camera.main.gameObject.GetComponent<FrostController>().isFrosty = true;
         }
     }
 }
