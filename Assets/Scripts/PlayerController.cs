@@ -105,5 +105,10 @@ public class PlayerController : MonoBehaviour
         {
             Camera.main.gameObject.GetComponent<FrostController>().isFrosty = true;
         }
+
+        if (otherObject.gameObject.tag == "EndTrigger")
+        {
+            Application.Quit();             // Quit the application
+        }
     }
 }

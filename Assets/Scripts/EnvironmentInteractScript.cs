@@ -6,6 +6,8 @@ public class EnvironmentInteractScript : MonoBehaviour
 {
     Renderer rend;
 
+    public Color color;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -21,6 +23,6 @@ public class EnvironmentInteractScript : MonoBehaviour
     public void InteractionEvent ()
     {
         // Do the thing
-        rend.material.color = Color.red;
+        rend.material.color = color;
     }
 }
