@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public LevelController levelController;
     CameraScript cameraScript;
     GameController gameController;
+    UIController uiController;
 
     public float moveSpeed;
     public bool isChangingLane;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         cameraScript = GetComponentInChildren<CameraScript>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        uiController = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
 	}
 	
 	// Update is called once per frame
@@ -42,12 +44,12 @@ public class PlayerController : MonoBehaviour
         {
             if (!levelController.hasChosen)                                             // Check the junction script to see if the next area has already been chosen
             {
-                if (Input.GetKey("a"))                                                  // If the player presses the left direction while in the trigger, send them to the left area
+                if (Input.GetAxis("Horizontal") < -0.1f)                                 // If the player presses the left direction while in the trigger, send them to the left area
                 {
                     target = levelController.leftTunnel;                                // Set the target to the left tunnel in the current area
                     levelController.hasChosen = true;                                   // Set the has chosen variable to true
                 }
-                else if (Input.GetKey("d"))                                             // If the player presses the right direction while in the trigger, send them to the right area
+                else if (Input.GetAxis("Horizontal") > 0.1f)                           // If the player presses the right direction while in the trigger, send them to the right area
                 {
                     target = levelController.rightTunnel;                               // Set the target to the right tunnel in the current area
                     levelController.hasChosen = true;                                   // Set the has chosen variable to true
@@ -108,7 +110,8 @@ public class PlayerController : MonoBehaviour
 
         if (otherObject.gameObject.tag == "EndTrigger")
         {
-            Application.Quit();             // Quit the application
+            uiController.isFaded = true;
+            moveSpeed = 0;
         }
     }
 }
