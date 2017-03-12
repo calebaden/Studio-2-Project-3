@@ -6,9 +6,12 @@ using Battlehub.HorizonBending;
 
 public class MouseClickScript : MonoBehaviour
 {
+    PlayerController playerController;
     AudioSource audioSource;
 
     public Texture2D interactIcon;
+    public Texture2D rightArrow;
+    public Texture2D leftArrow;
     public Vector2 hotSpot;
     public CursorMode cursorMode = CursorMode.Auto;
 
@@ -19,6 +22,7 @@ public class MouseClickScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        playerController = GetComponent<PlayerController>();
         audioSource = GetComponent<AudioSource>();
 	}
 	
@@ -45,6 +49,32 @@ public class MouseClickScript : MonoBehaviour
                 {
                     hit.transform.GetComponent<EnvironmentInteractScript>().InteractionEvent();
                     audioSource.PlayOneShot(interactSound);
+                }
+            }
+            else if (hit.collider.tag == "RightSign")
+            {
+                if (!cursorTextureActive)
+                {
+                    Cursor.SetCursor(rightArrow, hotSpot, cursorMode);
+                    cursorTextureActive = true;
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    playerController.ChooseRight();
+                }
+            }
+            else if (hit.collider.tag == "LeftSign")
+            {
+                if (!cursorTextureActive)
+                {
+                    Cursor.SetCursor(leftArrow, hotSpot, cursorMode);
+                    cursorTextureActive = true;
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    playerController.ChooseLeft();
                 }
             }
             else if (cursorTextureActive)

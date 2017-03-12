@@ -37,27 +37,6 @@ public class PlayerController : MonoBehaviour
         }
 	}
 
-    // Function that is called while colliding with another collider
-    private void OnTriggerStay(Collider otherObject)
-    {
-        if (otherObject.gameObject.tag == "Junction")                                   // Check if the other object is a junction
-        {
-            if (!levelController.hasChosen)                                             // Check the junction script to see if the next area has already been chosen
-            {
-                if (Input.GetAxis("Horizontal") < -0.1f)                                 // If the player presses the left direction while in the trigger, send them to the left area
-                {
-                    target = levelController.leftTunnel;                                // Set the target to the left tunnel in the current area
-                    levelController.hasChosen = true;                                   // Set the has chosen variable to true
-                }
-                else if (Input.GetAxis("Horizontal") > 0.1f)                           // If the player presses the right direction while in the trigger, send them to the right area
-                {
-                    target = levelController.rightTunnel;                               // Set the target to the right tunnel in the current area
-                    levelController.hasChosen = true;                                   // Set the has chosen variable to true
-                }
-            }
-        }
-    }
-
     // Function that is called when exiting another collider
     private void OnTriggerExit(Collider otherObject)
     {
@@ -90,7 +69,23 @@ public class PlayerController : MonoBehaviour
             isChangingLane = false;                                                 // Set the changing lane bool to false so the character walks in a straight line
             otherObject.GetComponent<LoadAreaScript>().areaToLoad.SetActive(true);  // Load the next area that is a game object on the colliders script
             otherObject.GetComponent<LoadAreaScript>().areaToLoad.transform.position = otherObject.transform.position + new Vector3(0, -0.5f, tunnelLength);
-            
+
+            // Change the weather to the given string if it is not already
+            if (otherObject.GetComponent<LoadAreaScript>().weather != gameController.currentWeather)
+            {
+                if (otherObject.GetComponent<LoadAreaScript>().weather == "Sunset")
+                {
+                    gameController.ChangeToSunset();
+                }
+                else if (otherObject.GetComponent<LoadAreaScript>().weather == "Night")
+                {
+                    gameController.ChangeToNight();
+                }
+                else if (otherObject.GetComponent<LoadAreaScript>().weather == "Snow")
+                {
+                    gameController.ChangeToSnow();
+                }
+            }
         }
         else if (otherObject.gameObject.tag == "TunnelExit")            // Check if the other object is a tunnel exit
         {
@@ -111,18 +106,24 @@ public class PlayerController : MonoBehaviour
         if (otherObject.gameObject.tag == "EndTrigger")
         {
             uiController.isFaded = true;
-            moveSpeed = 0;
         }
+    }
 
-        if (otherObject.gameObject.tag == "NightTrigger")
+    public void ChooseLeft ()
+    {
+        if (!levelController.hasChosen)
         {
-            gameController.isNight = true;
-            gameController.skyPlane.GetComponent<Renderer>().material.mainTexture = gameController.nightBG;
+            target = levelController.leftTunnel;                                // Set the target to the left tunnel in the current area
+            levelController.hasChosen = true;                                   // Set the has chosen variable to true
         }
-        else if (otherObject.gameObject.tag == "DayTrigger")
+    }
+
+    public void ChooseRight ()
+    {
+        if (!levelController.hasChosen)
         {
-            gameController.isNight = false;
-            gameController.skyPlane.GetComponent<Renderer>().material.mainTexture = gameController.sunsetBG;
+            target = levelController.rightTunnel;                               // Set the target to the right tunnel in the current area
+            levelController.hasChosen = true;                                   // Set the has chosen variable to true
         }
     }
 }

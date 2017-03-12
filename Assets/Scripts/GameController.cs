@@ -16,15 +16,18 @@ public class GameController : MonoBehaviour
 
     // Skyplane variables
     public GameObject skyPlane;
+    Renderer skyRend;
     public Texture sunsetBG;
     public Texture nightBG;
+    public Texture snowBG;
 
-    // Not much going here, will optimize level transition code at a later time
+    // Weather variables
+    public string currentWeather = "Sunset";
 
     // Use this for initialization
     void Start ()
     {
-        
+        skyRend = skyPlane.GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
@@ -40,6 +43,7 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene(0);
         }
 
+        // Switches between night and day depending on the isNight bool
         if (isNight && RenderSettings.ambientIntensity > minAmbient)
         {
             RenderSettings.ambientIntensity -= lightFadeSpeed * Time.deltaTime;
@@ -49,4 +53,28 @@ public class GameController : MonoBehaviour
             RenderSettings.ambientIntensity += lightFadeSpeed * Time.deltaTime;
         }
 	}
+
+    // Function that changes the weather to sunset
+    public void ChangeToSunset ()
+    {
+        isNight = false;
+        skyRend.material.mainTexture = sunsetBG;
+        currentWeather = "Sunset";
+    }
+
+    // Function that changes the weather to night time
+    public void ChangeToNight ()
+    {
+        isNight = true;
+        skyRend.material.mainTexture = nightBG;
+        currentWeather = "Night";
+    }
+
+    // Function that changes the weather to snow
+    public void ChangeToSnow ()
+    {
+        isNight = false;
+        skyRend.material.mainTexture = snowBG;
+        currentWeather = "Snow";
+    }
 }
