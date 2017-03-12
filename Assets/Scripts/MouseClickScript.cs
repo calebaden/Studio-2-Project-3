@@ -35,7 +35,6 @@ public class MouseClickScript : MonoBehaviour
         {
             if (hit.collider.tag == "Interactable")
             {
-                Debug.Log("Hit!");
                 if (!cursorTextureActive)
                 {
                     Cursor.SetCursor(interactIcon, hotSpot, cursorMode);

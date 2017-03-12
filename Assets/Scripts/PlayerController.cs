@@ -113,5 +113,16 @@ public class PlayerController : MonoBehaviour
             uiController.isFaded = true;
             moveSpeed = 0;
         }
+
+        if (otherObject.gameObject.tag == "NightTrigger")
+        {
+            gameController.isNight = true;
+            gameController.skyPlane.GetComponent<Renderer>().material.mainTexture = gameController.nightBG;
+        }
+        else if (otherObject.gameObject.tag == "DayTrigger")
+        {
+            gameController.isNight = false;
+            gameController.skyPlane.GetComponent<Renderer>().material.mainTexture = gameController.sunsetBG;
+        }
     }
 }

@@ -4,14 +4,24 @@ using UnityEngine;
 
 public class EnvironmentInteractScript : MonoBehaviour
 {
-    Renderer rend;
+    
+    // Common Variables
+    public string type;
+    public bool isActive = true;
 
+    // Tree Variables
     public Color color;
 
-	// Use this for initialization
-	void Start ()
+    // Lamp Variables
+    public GameObject lampBulb;
+    public Light spotLight;
+    public Material baseMat;
+    public Material emissMat;
+
+    // Use this for initialization
+    void Start ()
     {
-        rend = GetComponent<Renderer>();
+        
 	}
 	
 	// Update is called once per frame
@@ -22,7 +32,39 @@ public class EnvironmentInteractScript : MonoBehaviour
 
     public void InteractionEvent ()
     {
-        // Do the thing
-        rend.material.color = color;
+        if (type == "Tree")
+        {
+            treeInteraction();
+        }
+        else if (type == "Lamp")
+        {
+            lampInteraction();
+        }
+    }
+
+    void treeInteraction ()
+    {
+        if (isActive)
+        {
+            Renderer rend = GetComponent<Renderer>();
+            rend.material.color = color;
+            isActive = false;
+        }
+    }
+
+    void lampInteraction ()
+    {
+        if (isActive)
+        {
+            //spotLight.intensity = 1;
+            lampBulb.GetComponent<Renderer>().material = emissMat;
+            isActive = false;
+        }
+        else
+        {
+            //spotLight.intensity = 0;
+            lampBulb.GetComponent<Renderer>().material = baseMat;
+            isActive = true;
+        }
     }
 }
