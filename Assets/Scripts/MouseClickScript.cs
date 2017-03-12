@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Battlehub.HorizonBending;
 
 public class MouseClickScript : MonoBehaviour
 {
@@ -24,14 +25,17 @@ public class MouseClickScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Raycast variables
+        Ray[] rays;
+        float[] maxDistances;
+        HB.ScreenPointToRays(Camera.main, out rays, out maxDistances);
 
-        // Check if the raycast hit anything
-        if (Physics.Raycast(ray, out hit, 1000))
+        RaycastHit hit;
+        if (HB.Raycast(rays, out hit, maxDistances))
         {
             if (hit.collider.tag == "Interactable")
             {
+                Debug.Log("Hit!");
                 if (!cursorTextureActive)
                 {
                     Cursor.SetCursor(interactIcon, hotSpot, cursorMode);
@@ -40,19 +44,20 @@ public class MouseClickScript : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    // Call the interact function on the selected event
                     hit.transform.GetComponent<EnvironmentInteractScript>().InteractionEvent();
                     audioSource.PlayOneShot(interactSound);
                 }
             }
-            else
+            else if (cursorTextureActive)
             {
-                if (cursorTextureActive)
-                {
-                    Cursor.SetCursor(null, Vector3.zero, cursorMode);
-                    cursorTextureActive = false;
-                }
+                Cursor.SetCursor(null, Vector3.zero, cursorMode);
+                cursorTextureActive = false;
             }
         }
-	}
+        else if (cursorTextureActive)
+        {
+            Cursor.SetCursor(null, Vector3.zero, cursorMode);
+            cursorTextureActive = false;
+        }
+    }
 }

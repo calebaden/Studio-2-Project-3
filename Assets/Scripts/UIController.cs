@@ -22,6 +22,7 @@ public class UIController : MonoBehaviour
 	void Start ()
     {
         currentScene = SceneManager.GetActiveScene().buildIndex;
+        blackFadeImage.color = Color.black;
 
         if (currentScene == 0)
         {
