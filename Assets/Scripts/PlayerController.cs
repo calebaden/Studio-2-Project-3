@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public bool isChangingLane;
     public float tunnelLength;
     public GameObject target;
+    public GameObject rainObject;
 
 	// Use this for initialization
 	void Start ()
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
         cameraScript = GetComponentInChildren<CameraScript>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         uiController = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
+        rainObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -101,6 +103,15 @@ public class PlayerController : MonoBehaviour
         else if (otherObject.gameObject.tag == "FrostEnable")
         {
             Camera.main.gameObject.GetComponent<FrostController>().isFrosty = true;
+        }
+
+        if (otherObject.gameObject.tag == "RainDisable")
+        {
+            rainObject.SetActive(false);
+        }
+        else if (otherObject.gameObject.tag == "RainEnable")
+        {
+            rainObject.SetActive(true);
         }
 
         if (otherObject.gameObject.tag == "EndTrigger")
