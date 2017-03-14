@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class EnvironmentInteractScript : MonoBehaviour
 {
-    
+    [Header("Common Variables")]
     // Common Variables
     public string type;
     public bool isActive = true;
 
+    [Header("Tree Variables")]
     // Tree Variables
     public Color color;
 
+    [Header("Lamp Variables")]
     // Lamp Variables
     public GameObject lampBulb;
     public Light spotLight;
-    public Material baseMat;
+    public Material offMat;
     public Material emissMat;
+    public float maxIntensity;
+    public float lightFadeSpeed;
 
     // Use this for initialization
     void Start ()
@@ -27,9 +31,18 @@ public class EnvironmentInteractScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		
+        // Fades the spot lights intensity based on the lamps current state
+		if (type == "Lamp" && isActive && spotLight.intensity < maxIntensity)
+        {
+            spotLight.intensity += lightFadeSpeed * Time.deltaTime;
+        }
+        else if (type == "Lamp" && !isActive && spotLight.intensity > 0)
+        {
+            spotLight.intensity -= lightFadeSpeed * Time.deltaTime;
+        }
 	}
 
+    // Function that checks the objects type and calls the appropriate function
     public void InteractionEvent ()
     {
         if (type == "Tree")
@@ -42,6 +55,7 @@ public class EnvironmentInteractScript : MonoBehaviour
         }
     }
 
+    // Function that handles the tree's behaviour
     void treeInteraction ()
     {
         if (isActive)
@@ -52,18 +66,17 @@ public class EnvironmentInteractScript : MonoBehaviour
         }
     }
 
+    // Function changes the lamps state from on and off
     void lampInteraction ()
     {
         if (isActive)
         {
-            //spotLight.intensity = 1;
-            lampBulb.GetComponent<Renderer>().material = emissMat;
+            lampBulb.GetComponent<Renderer>().material = offMat;
             isActive = false;
         }
         else
         {
-            //spotLight.intensity = 0;
-            lampBulb.GetComponent<Renderer>().material = baseMat;
+            lampBulb.GetComponent<Renderer>().material = emissMat;
             isActive = true;
         }
     }

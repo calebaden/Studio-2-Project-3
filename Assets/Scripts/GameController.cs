@@ -7,22 +7,40 @@ public class GameController : MonoBehaviour
 {
     public GameObject currentArea;
     public float gameLength;
-
-    // Ambient light variables
-    public float maxAmbient;
-    public float minAmbient;
-    public bool isNight;
+    public string currentWeather;
     public float lightFadeSpeed;
 
-    // Skyplane variables
+    [Header("Ambient Light Variables")]
+    //public float ambientFadeSpeed;
+    public float sunsetAmbient;
+    public float nightAmbient;
+    public float snowAmbient;
+    public float cloudyAmbient;
+
+    [Header("Directional Light Variables")]
+    public Light dirLight;
+    //public float dirLightFadeSpeed;
+    public float sunsetDirLight;
+    public float nightDirLight;
+    public float snowDirLight;
+    public float cloudyDirLight;
+
+    [Header("SkyPlane Directional Light Variables")]
+    public Light skyDirLight;
+    //public float skyDirLightFadeSpeed;
+    public float sunsetSkyDirLight;
+    public float nightSkyDirLight;
+    public float snowSkyDirLight;
+    public float cloudySkyDirLight;
+
+    [Header("SkyPlane Variables")]
     public GameObject skyPlane;
     Renderer skyRend;
     public Texture sunsetBG;
     public Texture nightBG;
     public Texture snowBG;
+    public Texture cloudyBG;
 
-    // Weather variables
-    public string currentWeather = "Sunset";
 
     // Use this for initialization
     void Start ()
@@ -43,38 +61,79 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene(0);
         }
 
-        // Switches between night and day depending on the isNight bool
-        if (isNight && RenderSettings.ambientIntensity > minAmbient)
-        {
-            RenderSettings.ambientIntensity -= lightFadeSpeed * Time.deltaTime;
-        }
-        else if (!isNight && RenderSettings.ambientIntensity < maxAmbient)
-        {
-            RenderSettings.ambientIntensity += lightFadeSpeed * Time.deltaTime;
-        }
-	}
+        ChangeWeather();
+    }
 
-    // Function that changes the weather to sunset
+    // Changes weather based on string variable
+    public void ChangeWeather ()
+    {
+        if (currentWeather == "Sunset")
+        {
+            ChangeToSunset();
+        }
+        else if (currentWeather == "Rain")
+        {
+            ChangeToNight();
+        }
+        else if (currentWeather == "Snow")
+        {
+            ChangeToSnow();
+        }
+        else if (currentWeather == "Cloudy")
+        {
+            ChangeToCloudy();
+        }
+    }
+
+    // Function that changes the lighting and skybox to sunset elements
     public void ChangeToSunset ()
     {
-        isNight = false;
-        skyRend.material.mainTexture = sunsetBG;
-        currentWeather = "Sunset";
+        RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, sunsetAmbient, lightFadeSpeed * Time.deltaTime);
+        dirLight.intensity = Mathf.Lerp(dirLight.intensity, sunsetDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, sunsetSkyDirLight, lightFadeSpeed * Time.deltaTime);
+
+        if (skyRend.material.mainTexture != sunsetBG)
+        {
+            skyRend.material.mainTexture = sunsetBG;
+        }
     }
 
-    // Function that changes the weather to night time
+    // Function that changes the lighting and skybox to night elements
     public void ChangeToNight ()
     {
-        isNight = true;
-        skyRend.material.mainTexture = nightBG;
-        currentWeather = "Night";
+        RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, nightAmbient, lightFadeSpeed * Time.deltaTime);
+        dirLight.intensity = Mathf.Lerp(dirLight.intensity, nightDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, nightSkyDirLight, lightFadeSpeed * Time.deltaTime);
+
+        if (skyRend.material.mainTexture != nightBG)
+        {
+            skyRend.material.mainTexture = nightBG;
+        }
     }
 
-    // Function that changes the weather to snow
+    // Function that changes the lighting and skybox to snow elements
     public void ChangeToSnow ()
     {
-        isNight = false;
-        skyRend.material.mainTexture = snowBG;
-        currentWeather = "Snow";
+        RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, snowAmbient, lightFadeSpeed * Time.deltaTime);
+        dirLight.intensity = Mathf.Lerp(dirLight.intensity, snowDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, snowSkyDirLight, lightFadeSpeed * Time.deltaTime);
+
+        if (skyRend.material.mainTexture != snowBG)
+        {
+            skyRend.material.mainTexture = snowBG;
+        }
+    }
+
+    // Function that changes the lighting and skybox to cloudy elements
+    public void ChangeToCloudy ()
+    {
+        RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, cloudyAmbient, lightFadeSpeed * Time.deltaTime);
+        dirLight.intensity = Mathf.Lerp(dirLight.intensity, cloudyDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, cloudySkyDirLight, lightFadeSpeed * Time.deltaTime);
+
+        if (skyRend.material.mainTexture != cloudyBG)
+        {
+            skyRend.material.mainTexture = cloudyBG;
+        }
     }
 }

@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
         cameraScript = GetComponentInChildren<CameraScript>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         uiController = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
-        rainObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -71,23 +70,6 @@ public class PlayerController : MonoBehaviour
             isChangingLane = false;                                                 // Set the changing lane bool to false so the character walks in a straight line
             otherObject.GetComponent<LoadAreaScript>().areaToLoad.SetActive(true);  // Load the next area that is a game object on the colliders script
             otherObject.GetComponent<LoadAreaScript>().areaToLoad.transform.position = otherObject.transform.position + new Vector3(0, -0.5f, tunnelLength);
-
-            // Change the weather to the given string if it is not already
-            if (otherObject.GetComponent<LoadAreaScript>().weather != gameController.currentWeather)
-            {
-                if (otherObject.GetComponent<LoadAreaScript>().weather == "Sunset")
-                {
-                    gameController.ChangeToSunset();
-                }
-                else if (otherObject.GetComponent<LoadAreaScript>().weather == "Night")
-                {
-                    gameController.ChangeToNight();
-                }
-                else if (otherObject.GetComponent<LoadAreaScript>().weather == "Snow")
-                {
-                    gameController.ChangeToSnow();
-                }
-            }
         }
         else if (otherObject.gameObject.tag == "TunnelExit")            // Check if the other object is a tunnel exit
         {
