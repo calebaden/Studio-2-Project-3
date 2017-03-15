@@ -13,6 +13,9 @@ public class LevelController : MonoBehaviour
     public GameObject leftTunnel;
     public GameObject rightTunnel;
 
+    public GameObject leftSignArrow;
+    public GameObject rightSignArrow;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -31,4 +34,19 @@ public class LevelController : MonoBehaviour
     {
 		
 	}
+
+    public void ChangeSignMat (string direction)
+    {
+        if (!hasChosen && leftSignArrow && rightSignArrow)
+        {
+            if (direction == "Left")
+            {
+                leftSignArrow.GetComponent<Renderer>().material.color = Color.green;
+            }
+            else if (direction == "Right")
+            {
+                rightSignArrow.GetComponent<Renderer>().material.color = Color.green;
+            }
+        }
+    }
 }

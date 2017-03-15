@@ -49,11 +49,14 @@ public class PlayerController : MonoBehaviour
                 if (rand == 0)
                 {
                     target = levelController.leftTunnel;                        // If the random value is 0, set the target to the left tunnel of the current area
+                    levelController.ChangeSignMat("Left");
                 }
                 else
                 {
                     target = levelController.rightTunnel;                       // If the random value is 1, set the target to the right tunnel of the current area
+                    levelController.ChangeSignMat("Right");
                 }
+                levelController.hasChosen = true;
             }
 
             // Start changing lane and zoom in the camera
@@ -102,20 +105,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ChooseLeft ()
+    public void ChooseDirection (string direction)
     {
         if (!levelController.hasChosen)
         {
-            target = levelController.leftTunnel;                                // Set the target to the left tunnel in the current area
-            levelController.hasChosen = true;                                   // Set the has chosen variable to true
-        }
-    }
-
-    public void ChooseRight ()
-    {
-        if (!levelController.hasChosen)
-        {
-            target = levelController.rightTunnel;                               // Set the target to the right tunnel in the current area
+            if (direction == "Left")
+            {
+                target = levelController.leftTunnel;                            // Set the target to the left tunnel in the current area
+                levelController.ChangeSignMat("Left");
+            }
+            else if (direction == "Right")
+            {
+                target = levelController.rightTunnel;                           // Set the target to the right tunnel in the current area
+                levelController.ChangeSignMat("Right");
+            }
+            
             levelController.hasChosen = true;                                   // Set the has chosen variable to true
         }
     }

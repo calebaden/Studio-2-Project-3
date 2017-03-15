@@ -13,7 +13,7 @@ public class MouseClickScript : MonoBehaviour
     public Texture2D rightArrow;
     public Texture2D leftArrow;
     public Vector2 hotSpot;
-    public CursorMode cursorMode = CursorMode.Auto;
+    public CursorMode cursorMode;
 
     bool cursorTextureActive = false;
 
@@ -61,7 +61,7 @@ public class MouseClickScript : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    playerController.ChooseRight();
+                    playerController.ChooseDirection("Right");
                 }
             }
             else if (hit.collider.tag == "LeftSign")
@@ -74,7 +74,7 @@ public class MouseClickScript : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    playerController.ChooseLeft();
+                    playerController.ChooseDirection("Left");
                 }
             }
             else if (cursorTextureActive)
