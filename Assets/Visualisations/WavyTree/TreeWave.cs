@@ -11,7 +11,7 @@ public class TreeWave : MonoBehaviour {
     private GameObject[] toWave;//objects that will wave
 
     private float[] spectrum;
-    public int channels = 2;//the number of channels. 8^channels
+    private int channels = 2;//the number of channels. 8^channels
 
     public float waveSpeed = .8f;//how fast the wave moves
     private float oldWaveSpeed;//caching the old speed
@@ -19,15 +19,14 @@ public class TreeWave : MonoBehaviour {
     public float waveDistance = .1f;//how far from the middle of the object the vertexes move
     public float waveFrequency = .1f;//how many waves go through the object
 
-    public float musicMod = 30f;//how much the audio is multiplied
+
+    private float musicMod = 30f;//how much the audio is multiplied
 
     //the range that the speed gets its average from the audio spectrum
     public int minIndex = 0;//first
     public int maxIndex = 10;
-    private float avg;//average between the spectrums
 
-    private float dist;
-    public float offset;
+    private float avg;//average between the spectrums
     GameObject player;
 
     // Use this for initialization
@@ -44,37 +43,48 @@ public class TreeWave : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
-        //get the audio data
-        aud.GetSpectrumData(spectrum, 0, FFTWindow.Hamming);
+        ////get the audio data
+        //aud.GetSpectrumData(spectrum, 0, FFTWindow.Hamming);
 
-        //waveSpeed = Mathf.Lerp(waveSpeed, spectrum[5] * musicMod, Time.deltaTime);
+        ////waveSpeed = Mathf.Lerp(waveSpeed, spectrum[5] * musicMod, Time.deltaTime);
 
-        float tempHolder = 0;
-        float tempToDivide = 0;
+        //float tempHolder = 0;
+        //float tempToDivide = 0;
 
-        //get average between the index
-        for (int i = minIndex; i < maxIndex; ++i)
-        {
-            tempHolder += spectrum[i];
-            ++tempToDivide;
-        }
+        ////get average between the index
+        //for (int i = minIndex; i < maxIndex; ++i)
+        //{
+        //    tempHolder += spectrum[i];
+        //    ++tempToDivide;
+        //}
 
-        avg = (tempHolder / tempToDivide) * musicMod;
+        //avg = (tempHolder / tempToDivide) * musicMod;
 
-        oldWaveSpeed = waveSpeed;
+        //if (avg > 1)
+        //{
+        //    waveSpeed = Mathf.SmoothStep(waveSpeed, 2, Time.deltaTime * .5f);
+        //}
 
-        waveSpeed = 2;
-        //waveSpeed = Mathf.Lerp(waveSpeed, avg, Time.deltaTime * 4f);
+        //else
+        //{
+        //    waveSpeed = Mathf.Lerp(waveSpeed, 1, Time.deltaTime);
+        //}
 
-        //waveSpeed = (waveSpeed + oldWaveSpeed) * .5f;//then average between the old speed
+        //waveSpeed += Mathf.Lerp(waveSpeed, avg, Time.deltaTime * 4);
+
+        //waveSpeed = Mathf.Clamp(waveSpeed, 1, 3);
+        
+        
+
+        //oldWaveSpeed = waveSpeed;
 
         foreach (GameObject g in toWave)//for every waving object
         {
             MeshRenderer mesh = g.GetComponent<MeshRenderer>();//grab the mesh
 
-            dist = Vector3.Magnitude(player.transform.position - g.transform.position);
+            Vector4 pos = player.transform.position;
 
             for (int index = 0; index < mesh.materials.Length; ++index)
             {
@@ -87,8 +97,7 @@ public class TreeWave : MonoBehaviour {
                 //m.SetFloat("_Music", spectrum[5]);
                 mesh.materials[index].SetFloat("_Speed", waveSpeed);
                 mesh.materials[index].SetFloat("_Distance", waveDistance);
-                mesh.materials[index].SetFloat("_Offset", offset);
-                mesh.materials[index].SetFloat("_Dist", dist);
+                mesh.materials[index].SetVector("_Dist", pos);
                 mesh.materials[index].SetFloat("_Frequency", waveFrequency);            
             }
         }

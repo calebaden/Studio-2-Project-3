@@ -13,14 +13,13 @@ Shader "Custom/SinWaveVertext" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_Glossiness("Smoothness", Range(0,1)) = 0.5
+		_Metallic("Metallic", Range(0,1)) = 0.0
 		_Music("Music",Range(0,1)) = 0.0
 		_Speed("Speed", float) = 0.0
 		_Frequency("Frequency",float) = 0.0
 		_Distance("Distance",float) = 0.0
-		_Offset("Offset",float) = 0.0
-		_Dist("Dist",float) = 0.0
+		_Dist("Dist",Vector) = (0,0,0,0)
 
 	}
 	SubShader {
@@ -53,15 +52,16 @@ Shader "Custom/SinWaveVertext" {
 		float _Frequency;//the frequency of waves
 		float _Distance;//the amount the pixels moves along its axis
 		float _Offset;
-		float _Dist;
+		float4 _Dist;
 
 		void vert(inout appdata_full v, out Input o)
 		{
 			HB(v.vertex);
-			//offset the y value so that the bottom of the model is 0 instead of the middle
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
-			float a = abs(v.vertex.y + .5);
+			float yDist = _Dist.y - v.vertex.y;
+			//abs the vertex.y value so that the bottom of the model is 0 instead of the middle. Then offset this value by the position of the player so the vertexes align with the rotating world
+			float a = abs(v.vertex.y + .5) - yDist;
 
 			//do a sin wave along the model. The higher the pixel, the more it moves
 			v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Frequency) * ((_Distance * a));
