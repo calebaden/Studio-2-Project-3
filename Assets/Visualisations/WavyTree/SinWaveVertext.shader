@@ -29,6 +29,7 @@ Shader "Custom/SinWaveVertext" {
 		
 		CGPROGRAM
 #include "Assets/Battlehub/HorizonBending/Shaders/CGIncludes/HB_Core.cginc"
+#pragma enable_d3d11_debug_symbols
 
 		// Physically based Standard lighting model, and enable shadows on all light types
 		#pragma surface surf Standard fullforwardshadows vertex:vert addshadow
