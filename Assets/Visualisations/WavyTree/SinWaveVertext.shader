@@ -1,4 +1,15 @@
-﻿Shader "Custom/SinWaveVertext" {
+﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Custom/SinWaveVertext" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -8,6 +19,9 @@
 		_Speed("Speed", float) = 0.0
 		_Frequency("Frequency",float) = 0.0
 		_Distance("Distance",float) = 0.0
+		_Offset("Offset",float) = 0.0
+		_Dist("Dist",float) = 0.0
+
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -27,6 +41,7 @@
 		struct Input {
 			float2 uv_MainTex;
 			float3 worldPos;
+			float3 objPos;
 		};
 
 		half _Glossiness;
@@ -36,15 +51,19 @@
 		float _Speed;//how fast the model waves
 		float _Frequency;//the frequency of waves
 		float _Distance;//the amount the pixels moves along its axis
+		float _Offset;
+		float _Dist;
 
-		void vert(inout appdata_full v)
+		void vert(inout appdata_full v, out Input o)
 		{
 			HB(v.vertex);
 			//offset the y value so that the bottom of the model is 0 instead of the middle
+			UNITY_INITIALIZE_OUTPUT(Input, o);
+
 			float a = abs(v.vertex.y + .5);
 
 			//do a sin wave along the model. The higher the pixel, the more it moves
-			v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Frequency) * (_Distance * a);
+			v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Frequency) * ((_Distance * a));
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
