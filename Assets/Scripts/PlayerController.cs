@@ -9,8 +9,13 @@ public class PlayerController : MonoBehaviour
     GameController gameController;
     UIController uiController;
 
+    public GameObject playerObject;
+
     public float moveSpeed;
-    public bool isChangingLane;
+    public float rotateSpeed;
+    Vector3 direction;
+    Quaternion lookRotation;
+    bool isChangingLane;
     public float tunnelLength;
     public GameObject target;
     public GameObject rainObject;
@@ -31,11 +36,17 @@ public class PlayerController : MonoBehaviour
         if (!isChangingLane)
         {
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            direction = Vector3.forward;
+            lookRotation = Quaternion.LookRotation(direction);
+            playerObject.transform.rotation = Quaternion.Slerp(playerObject.transform.rotation, lookRotation, rotateSpeed * Time.deltaTime);
         }
         // If the player is changing lanes, move towards the target
         else
         {
             transform.position = Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed * Time.deltaTime);
+            direction = (target.transform.position - transform.position).normalized;
+            lookRotation = Quaternion.LookRotation(direction);
+            playerObject.transform.rotation = Quaternion.Slerp(playerObject.transform.rotation, lookRotation, rotateSpeed * Time.deltaTime);
         }
 	}
 
