@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnvironmentInteractScript : MonoBehaviour
 {
+    public MouseClickScript mouseClickScript;
+
     [Header("Common Variables")]
     // Common Variables
     public string type;
@@ -11,6 +13,10 @@ public class EnvironmentInteractScript : MonoBehaviour
 
     [Header("Tree Variables")]
     // Tree Variables
+    public GameObject leaves;
+    public ParticleSystem leafParticles;
+    Animator leafAnimator;
+    public AudioClip treeSound;
     public Color color;
 
     [Header("Lamp Variables")]
@@ -25,7 +31,10 @@ public class EnvironmentInteractScript : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        
+        if (type == "Tree")
+        {
+            leafAnimator = leaves.GetComponent<Animator>();
+        }
 	}
 	
 	// Update is called once per frame
@@ -60,8 +69,9 @@ public class EnvironmentInteractScript : MonoBehaviour
     {
         if (isActive)
         {
-            Renderer rend = GetComponent<Renderer>();
-            rend.material.color = color;
+            leafAnimator.Play("Fall");
+            leafParticles.Play();
+            //mouseClickScript.audioSource.PlayOneShot(treeSound);
             isActive = false;
         }
     }

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float tunnelLength;
     public GameObject target;
     public GameObject rainObject;
+    public GameObject dustObject;
 
 	// Use this for initialization
 	void Start ()
@@ -97,6 +98,15 @@ public class PlayerController : MonoBehaviour
         else if (otherObject.gameObject.tag == "RainEnable")
         {
             rainObject.SetActive(true);
+        }
+
+        if (otherObject.gameObject.tag == "DustDisable")
+        {
+            dustObject.SetActive(false);
+        }
+        else if (otherObject.gameObject.tag == "DustEnable")
+        {
+            dustObject.SetActive(true);
         }
 
         if (otherObject.gameObject.tag == "EndTrigger")
