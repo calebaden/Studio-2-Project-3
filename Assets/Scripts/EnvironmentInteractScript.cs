@@ -7,20 +7,22 @@ public class EnvironmentInteractScript : MonoBehaviour
     public MouseClickScript mouseClickScript;
 
     [Header("Common Variables")]
-    // Common Variables
     public string type;
     public bool isActive = true;
 
-    [Header("Tree Variables")]
-    // Tree Variables
+    [Header("ParkTree Variables")]
     public GameObject leaves;
     public ParticleSystem leafParticles;
     Animator leafAnimator;
     public AudioClip treeSound;
-    public Color color;
+
+    [Header("PalmTree Variables")]
+    public GameObject coconut;
+    Rigidbody coconutRB;
+
+    [Header("SnowTree Variables")]
 
     [Header("Lamp Variables")]
-    // Lamp Variables
     public GameObject lampBulb;
     public Light spotLight;
     public Material offMat;
@@ -31,9 +33,13 @@ public class EnvironmentInteractScript : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        if (type == "Tree")
+        if (type == "ParkTree")
         {
             leafAnimator = leaves.GetComponent<Animator>();
+        }
+        else if (type == "PalmTree")
+        {
+            coconutRB = coconut.GetComponent<Rigidbody>();
         }
 	}
 	
@@ -54,9 +60,13 @@ public class EnvironmentInteractScript : MonoBehaviour
     // Function that checks the objects type and calls the appropriate function
     public void InteractionEvent ()
     {
-        if (type == "Tree")
+        if (type == "ParkTree")
         {
-            treeInteraction();
+            parkTreeInteraction();
+        }
+        else if (type == "PalmTree")
+        {
+            palmTreeInteraction();
         }
         else if (type == "Lamp")
         {
@@ -64,14 +74,24 @@ public class EnvironmentInteractScript : MonoBehaviour
         }
     }
 
-    // Function that handles the tree's behaviour
-    void treeInteraction ()
+    // Function that activates the park tree's animation and particle effect
+    void parkTreeInteraction ()
     {
         if (isActive)
         {
             leafAnimator.Play("Fall");
             leafParticles.Play();
             //mouseClickScript.audioSource.PlayOneShot(treeSound);
+            isActive = false;
+        }
+    }
+
+    // Function that sets the kinematic value of the coconut object to false
+    void palmTreeInteraction ()
+    {
+        if (isActive)
+        {
+            coconutRB.isKinematic = false;
             isActive = false;
         }
     }
