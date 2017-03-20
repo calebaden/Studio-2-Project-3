@@ -30,6 +30,9 @@ public class EnvironmentInteractScript : MonoBehaviour
     public float maxIntensity;
     public float lightFadeSpeed;
 
+    [Header("Bouy Variables")]
+    public Animator bouyAnimator;
+
     // Use this for initialization
     void Start ()
     {
@@ -40,6 +43,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         else if (type == "PalmTree")
         {
             coconutRB = coconut.GetComponent<Rigidbody>();
+        }
+        else if (type == "Bouy")
+        {
+            bouyAnimator = GetComponent<Animator>();
         }
 	}
 	
@@ -72,6 +79,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         {
             lampInteraction();
         }
+        else if (type == "Bouy")
+        {
+            bouyInteraction();
+        }
     }
 
     // Function that activates the park tree's animation and particle effect
@@ -82,6 +93,16 @@ public class EnvironmentInteractScript : MonoBehaviour
             leafAnimator.Play("Fall");
             leafParticles.Play();
             //mouseClickScript.audioSource.PlayOneShot(treeSound);
+            isActive = false;
+        }
+    }
+
+    // Activates the bouy animation
+    void bouyInteraction()
+    {
+        if (isActive)
+        {
+            bouyAnimator.Play("bouyBobbing");
             isActive = false;
         }
     }
