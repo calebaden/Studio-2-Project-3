@@ -10,6 +10,7 @@ public class TreeWave : MonoBehaviour {
     public string tagToSearch;//the tag to search for objects
     private GameObject[] toWave;//objects that will wave
 
+    [SerializeField]
     private float[] spectrum;
     private int channels = 2;//the number of channels. 8^channels
 
@@ -29,6 +30,13 @@ public class TreeWave : MonoBehaviour {
     private float avg;//average between the spectrums
     GameObject player;
 
+    public bool enablePulsing = false;
+    public bool enableSwaying = false;
+
+    bool pulse = false;
+    int pulse2 = 0;
+    float smoothVal = 0;
+
     // Use this for initialization
     void Start ()
     {
@@ -46,7 +54,7 @@ public class TreeWave : MonoBehaviour {
 	void FixedUpdate ()
     {
         ////get the audio data
-        //aud.GetSpectrumData(spectrum, 0, FFTWindow.Hamming);
+        aud.GetSpectrumData(spectrum, 0, FFTWindow.Hamming);
 
         ////waveSpeed = Mathf.Lerp(waveSpeed, spectrum[5] * musicMod, Time.deltaTime);
 
@@ -75,31 +83,52 @@ public class TreeWave : MonoBehaviour {
         //waveSpeed += Mathf.Lerp(waveSpeed, avg, Time.deltaTime * 4);
 
         //waveSpeed = Mathf.Clamp(waveSpeed, 1, 3);
-        
-        
+
+
 
         //oldWaveSpeed = waveSpeed;
 
+        if (spectrum[4] > 0.01 && !pulse && enablePulsing)
+        {
+            pulse = true;
+            pulse2 = 1;
+            smoothVal = 0;
+        }
+        if (pulse)
+        {
+            smoothVal += Time.deltaTime * 20.0f;
+            if (smoothVal > 5.0f)
+            {
+                pulse = false;
+                pulse2 = 0;
+                smoothVal = 0;
+            }
+        }
         foreach (GameObject g in toWave)//for every waving object
         {
-            MeshRenderer mesh = g.GetComponent<MeshRenderer>();//grab the mesh
-
-            Vector4 pos = player.transform.position;
-
-            for (int index = 0; index < mesh.materials.Length; ++index)
+            if (!g.GetComponent<EnvironmentInteractScript>().isActive)
             {
-                if (mesh.materials[index].shader.name != waveShader.name)
-                {
-                    mesh.materials[index].shader = waveShader;//change the shader if need be
-                }
+                MeshRenderer mesh = g.GetComponent<MeshRenderer>();//grab the mesh
 
-                //send the data
-                //m.SetFloat("_Music", spectrum[5]);
-                mesh.materials[index].SetFloat("_Speed", waveSpeed);
-                mesh.materials[index].SetFloat("_Distance", waveDistance);
-                mesh.materials[index].SetVector("_Dist", pos);
-                mesh.materials[index].SetFloat("_Frequency", waveFrequency);            
+                Vector4 pos = player.transform.position;
+
+                for (int index = 0; index < mesh.materials.Length; ++index)
+                {
+                    if (mesh.materials[index].shader.name != waveShader.name)
+                    {
+                        mesh.materials[index].shader = waveShader;//change the shader if need be
+                    }
+
+                    //send the data
+                    mesh.materials[index].SetFloat("_Music", smoothVal);
+                    mesh.materials[index].SetInt("_Pulse", pulse2);
+                    mesh.materials[index].SetFloat("_Speed", waveSpeed);
+                    mesh.materials[index].SetFloat("_Distance", waveDistance);
+                    mesh.materials[index].SetVector("_Dist", pos);
+                    mesh.materials[index].SetFloat("_Frequency", waveFrequency);
+                }
             }
+
         }
     }
 }

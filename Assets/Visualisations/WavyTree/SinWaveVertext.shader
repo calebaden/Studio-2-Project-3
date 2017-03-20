@@ -1,15 +1,4 @@
-﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "Custom/SinWaveVertext" {
+﻿Shader "Custom/SinWaveVertext" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -20,6 +9,7 @@ Shader "Custom/SinWaveVertext" {
 		_Frequency("Frequency",float) = 0.0
 		_Distance("Distance",float) = 0.0
 		_Dist("Dist",Vector) = (0,0,0,0)
+		_Pulse("Pulse", int) = 0
 
 	}
 	SubShader {
@@ -53,6 +43,8 @@ Shader "Custom/SinWaveVertext" {
 		float _Distance;//the amount the pixels moves along its axis
 		float _Offset;
 		float4 _Dist;
+		bool _Pulse;
+		float _Music;
 
 		void vert(inout appdata_full v, out Input o)
 		{
@@ -65,6 +57,12 @@ Shader "Custom/SinWaveVertext" {
 
 			//do a sin wave along the model. The higher the pixel, the more it moves
 			v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Frequency) * ((_Distance * a));
+
+			if (_Pulse > 0)
+			{
+				float b = abs(v.vertex.y - _Music);
+				v.vertex.xyz += v.normal * saturate(1 - b * 2);
+			}
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
