@@ -77,7 +77,10 @@ public class UIController : MonoBehaviour
             }
             else
             {
-                creditsRoll.transform.Translate(Vector2.up * creditsRollSpeed * Time.deltaTime);
+                if (creditsRoll.transform.localPosition.y < 900)
+                {
+                    creditsRoll.transform.Translate(Vector2.up * creditsRollSpeed * Time.deltaTime);
+                }
             }
         }
     }

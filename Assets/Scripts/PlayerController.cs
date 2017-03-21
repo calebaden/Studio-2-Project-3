@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed;
     public float rotateSpeed;
+    public float stopSpeed;
     Vector3 direction;
     Quaternion lookRotation;
     bool isChangingLane;
@@ -47,6 +48,11 @@ public class PlayerController : MonoBehaviour
             direction = (target.transform.position - transform.position).normalized;
             lookRotation = Quaternion.LookRotation(direction);
             playerObject.transform.rotation = Quaternion.Slerp(playerObject.transform.rotation, lookRotation, rotateSpeed * Time.deltaTime);
+        }
+
+        if (uiController.isFaded)
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, 0, stopSpeed * Time.deltaTime);
         }
 	}
 
