@@ -106,29 +106,25 @@ public class TreeWave : MonoBehaviour {
         }
         foreach (GameObject g in toWave)//for every waving object
         {
-            if (!g.GetComponent<EnvironmentInteractScript>().isActive)
+            MeshRenderer mesh = g.GetComponent<MeshRenderer>();//grab the mesh
+
+            Vector4 pos = player.transform.position;
+
+            for (int index = 0; index < mesh.materials.Length; ++index)
             {
-                MeshRenderer mesh = g.GetComponent<MeshRenderer>();//grab the mesh
-
-                Vector4 pos = player.transform.position;
-
-                for (int index = 0; index < mesh.materials.Length; ++index)
+                if (mesh.materials[index].shader.name != waveShader.name)
                 {
-                    if (mesh.materials[index].shader.name != waveShader.name)
-                    {
-                        mesh.materials[index].shader = waveShader;//change the shader if need be
-                    }
-
-                    //send the data
-                    mesh.materials[index].SetFloat("_Music", smoothVal);
-                    mesh.materials[index].SetInt("_Pulse", pulse2);
-                    mesh.materials[index].SetFloat("_Speed", waveSpeed);
-                    mesh.materials[index].SetFloat("_Distance", waveDistance);
-                    mesh.materials[index].SetVector("_Dist", pos);
-                    mesh.materials[index].SetFloat("_Frequency", waveFrequency);
+                    mesh.materials[index].shader = waveShader;//change the shader if need be
                 }
-            }
 
+                //send the data
+                mesh.materials[index].SetFloat("_Music", smoothVal);
+                mesh.materials[index].SetInt("_Pulse", pulse2);
+                mesh.materials[index].SetFloat("_Speed", waveSpeed);
+                mesh.materials[index].SetFloat("_Distance", waveDistance);
+                mesh.materials[index].SetVector("_Dist", pos);
+                mesh.materials[index].SetFloat("_Frequency", waveFrequency);
+            }
         }
     }
 }

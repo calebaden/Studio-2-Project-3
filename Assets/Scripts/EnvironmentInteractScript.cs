@@ -33,6 +33,10 @@ public class EnvironmentInteractScript : MonoBehaviour
     [Header("Bouy Variables")]
     public Animator bouyAnimator;
 
+    [Header("Tumbleweed Variable")]
+    public Vector3 forceVector;
+    public float torqueSpeed;
+
     // Use this for initialization
     void Start ()
     {
@@ -62,6 +66,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         {
             spotLight.intensity -= lightFadeSpeed * Time.deltaTime;
         }
+        else if (type == "Tumbleweed" && isActive)
+        {
+            GetComponent<Rigidbody>().AddTorque(transform.forward * torqueSpeed * Time.deltaTime, ForceMode.Force);
+        }
 	}
 
     // Function that checks the objects type and calls the appropriate function
@@ -82,6 +90,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         else if (type == "Bouy")
         {
             bouyInteraction();
+        }
+        else if (type == "Tumbleweed")
+        {
+            tumbleweedInteraction();
         }
     }
 
@@ -130,5 +142,12 @@ public class EnvironmentInteractScript : MonoBehaviour
             lampBulb.GetComponent<Renderer>().material = emissMat;
             isActive = true;
         }
+    }
+
+    // Function applies force to the tumbleweed object
+    void tumbleweedInteraction ()
+    {
+        GetComponent<Rigidbody>().AddForce(forceVector, ForceMode.Impulse);
+        isActive = false;
     }
 }
