@@ -34,8 +34,9 @@ public class EnvironmentInteractScript : MonoBehaviour
     public Animator bouyAnimator;
 
     [Header("Tumbleweed Variable")]
-    public Vector3 forceVector;
-    public float torqueSpeed;
+    public Vector3 verticalVector;
+    public float torqueAmount;
+    public float maxMagnitude;
 
     // Use this for initialization
     void Start ()
@@ -52,6 +53,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         {
             bouyAnimator = GetComponent<Animator>();
         }
+        else if (type == "Tumbleweed")
+        {
+            GetComponent<Rigidbody>().AddTorque(transform.forward * torqueAmount, ForceMode.Impulse);
+        }
 	}
 	
 	// Update is called once per frame
@@ -65,10 +70,6 @@ public class EnvironmentInteractScript : MonoBehaviour
         else if (type == "Lamp" && !isActive && spotLight.intensity > 0)
         {
             spotLight.intensity -= lightFadeSpeed * Time.deltaTime;
-        }
-        else if (type == "Tumbleweed" && isActive)
-        {
-            GetComponent<Rigidbody>().AddTorque(transform.forward * torqueSpeed * Time.deltaTime, ForceMode.Force);
         }
 	}
 
@@ -147,7 +148,8 @@ public class EnvironmentInteractScript : MonoBehaviour
     // Function applies force to the tumbleweed object
     void tumbleweedInteraction ()
     {
-        GetComponent<Rigidbody>().AddForce(forceVector, ForceMode.Impulse);
-        isActive = false;
+        Vector3 forceVector = transform.position - Camera.main.transform.position;
+        forceVector = Vector3.ClampMagnitude(forceVector, maxMagnitude);
+        GetComponent<Rigidbody>().AddForce(forceVector + verticalVector, ForceMode.Impulse);
     }
 }
