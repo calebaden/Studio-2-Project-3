@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public GameObject currentArea;
-    public float gameLength;
     public string currentWeather;
     public float lightFadeSpeed;
 
@@ -51,16 +50,6 @@ public class GameController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        // PLACEHOLDER: When the song finishes, load the main menu
-		if (gameLength > 0)
-        {
-            gameLength -= Time.deltaTime;
-        }
-        else
-        {
-            SceneManager.LoadScene(0);
-        }
-
         ChangeWeather();
     }
 
@@ -90,7 +79,7 @@ public class GameController : MonoBehaviour
     {
         RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, sunsetAmbient, lightFadeSpeed * Time.deltaTime);
         dirLight.intensity = Mathf.Lerp(dirLight.intensity, sunsetDirLight, lightFadeSpeed * Time.deltaTime);
-        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, sunsetSkyDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = sunsetSkyDirLight;
 
         if (skyRend.material.mainTexture != sunsetBG)
         {
@@ -103,7 +92,7 @@ public class GameController : MonoBehaviour
     {
         RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, nightAmbient, lightFadeSpeed * Time.deltaTime);
         dirLight.intensity = Mathf.Lerp(dirLight.intensity, nightDirLight, lightFadeSpeed * Time.deltaTime);
-        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, nightSkyDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = nightSkyDirLight;
 
         if (skyRend.material.mainTexture != nightBG)
         {
@@ -116,7 +105,7 @@ public class GameController : MonoBehaviour
     {
         RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, snowAmbient, lightFadeSpeed * Time.deltaTime);
         dirLight.intensity = Mathf.Lerp(dirLight.intensity, snowDirLight, lightFadeSpeed * Time.deltaTime);
-        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, snowSkyDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = snowSkyDirLight;
 
         if (skyRend.material.mainTexture != snowBG)
         {
@@ -129,7 +118,7 @@ public class GameController : MonoBehaviour
     {
         RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, cloudyAmbient, lightFadeSpeed * Time.deltaTime);
         dirLight.intensity = Mathf.Lerp(dirLight.intensity, cloudyDirLight, lightFadeSpeed * Time.deltaTime);
-        skyDirLight.intensity = Mathf.Lerp(skyDirLight.intensity, cloudySkyDirLight, lightFadeSpeed * Time.deltaTime);
+        skyDirLight.intensity = cloudySkyDirLight;
 
         if (skyRend.material.mainTexture != cloudyBG)
         {

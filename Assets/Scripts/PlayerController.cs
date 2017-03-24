@@ -119,8 +119,7 @@ public class PlayerController : MonoBehaviour
 
         if (otherObject.gameObject.tag == "DustDisable")
         {
-            dustObject.GetComponent<EllipsoidParticleEmitter>().maxEmission = Mathf.Lerp(dustObject.GetComponent<EllipsoidParticleEmitter>().maxEmission, 0, stopSpeed * Time.deltaTime);
-            dustObject.GetComponent<EllipsoidParticleEmitter>().minEmission = Mathf.Lerp(dustObject.GetComponent<EllipsoidParticleEmitter>().minEmission, 0, stopSpeed * Time.deltaTime);
+            dustObject.SetActive(false);
         }
         else if (otherObject.gameObject.tag == "DustEnable")
         {

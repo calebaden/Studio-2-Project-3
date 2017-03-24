@@ -47,7 +47,6 @@ public class MouseClickScript : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    hit.transform.GetComponent<EnvironmentInteractScript>().mouseClickScript = this;
                     hit.transform.GetComponent<EnvironmentInteractScript>().InteractionEvent();
                 }
             }

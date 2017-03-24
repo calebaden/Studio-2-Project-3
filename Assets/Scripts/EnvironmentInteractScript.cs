@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EnvironmentInteractScript : MonoBehaviour
 {
-    public MouseClickScript mouseClickScript;
-
     [Header("Common Variables")]
     public string type;
     public bool isActive = true;
@@ -14,13 +12,13 @@ public class EnvironmentInteractScript : MonoBehaviour
     public GameObject leaves;
     public ParticleSystem leafParticles;
     Animator leafAnimator;
-    public AudioClip treeSound;
 
     [Header("PalmTree Variables")]
     public GameObject coconut;
     Rigidbody coconutRB;
 
     [Header("SnowTree Variables")]
+    public ParticleSystem snowParticles;
 
     [Header("Lamp Variables")]
     public GameObject lampBulb;
@@ -37,15 +35,13 @@ public class EnvironmentInteractScript : MonoBehaviour
     public Vector3 verticalVector;
     public float torqueAmount;
     public float maxMagnitude;
+    public float interactCooldown;
+    float interactTimer;
 
     // Use this for initialization
     void Start ()
     {
-        if (type == "ParkTree")
-        {
-            leafAnimator = leaves.GetComponent<Animator>();
-        }
-        else if (type == "PalmTree")
+        if (type == "PalmTree")
         {
             coconutRB = coconut.GetComponent<Rigidbody>();
         }
@@ -71,6 +67,18 @@ public class EnvironmentInteractScript : MonoBehaviour
         {
             spotLight.intensity -= lightFadeSpeed * Time.deltaTime;
         }
+        else if (type == "Tumbleweed")
+        {
+            if (interactTimer > 0)
+            {
+                interactTimer -= Time.deltaTime;
+            }
+            else
+            {
+                isActive = true;
+                interactTimer = interactCooldown;
+            }
+        }
 	}
 
     // Function that checks the objects type and calls the appropriate function
@@ -79,6 +87,10 @@ public class EnvironmentInteractScript : MonoBehaviour
         if (type == "ParkTree")
         {
             parkTreeInteraction();
+        }
+        else if (type == "SnowTree")
+        {
+            snowTreeInteraction();
         }
         else if (type == "PalmTree")
         {
@@ -103,9 +115,20 @@ public class EnvironmentInteractScript : MonoBehaviour
     {
         if (isActive)
         {
+            leafAnimator = leaves.GetComponent<Animator>();
+            leaves.SetActive(true);
             leafAnimator.Play("Fall");
             leafParticles.Play();
-            //mouseClickScript.audioSource.PlayOneShot(treeSound);
+            isActive = false;
+        }
+    }
+
+    // Function that releases the snow from the snow tree
+    void snowTreeInteraction ()
+    {
+        if (isActive)
+        {
+            snowParticles.Play();
             isActive = false;
         }
     }
@@ -148,8 +171,12 @@ public class EnvironmentInteractScript : MonoBehaviour
     // Function applies force to the tumbleweed object
     void tumbleweedInteraction ()
     {
-        Vector3 forceVector = transform.position - Camera.main.transform.position;
-        forceVector = Vector3.ClampMagnitude(forceVector, maxMagnitude);
-        GetComponent<Rigidbody>().AddForce(forceVector + verticalVector, ForceMode.Impulse);
+        if (isActive)
+        {
+            Vector3 forceVector = transform.position - Camera.main.transform.position;
+            forceVector = Vector3.ClampMagnitude(forceVector, maxMagnitude);
+            GetComponent<Rigidbody>().AddForce(forceVector + verticalVector, ForceMode.Impulse);
+            isActive = false;
+        }
     }
 }

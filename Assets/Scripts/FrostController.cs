@@ -9,6 +9,7 @@ public class FrostController : MonoBehaviour
     public bool isFrosty = false;
     public float maxFrost = 0.36f;
     public float minFrost = 0;
+    public float removeMult;
 
 	// Use this for initialization
 	void Start ()
@@ -22,11 +23,23 @@ public class FrostController : MonoBehaviour
         if (isFrosty)
         {
             frostScript.FrostAmount = Mathf.Lerp(frostScript.FrostAmount, maxFrost, 1 * Time.deltaTime);
+
+            if (Input.mousePosition.x < Screen.width / 2 && Input.GetAxis("Mouse X") < 0)
+            {
+                float mouseX = Input.GetAxis("Mouse X");
+                mouseX = Mathf.Clamp(mouseX, -1, 0);
+                frostScript.FrostAmount = Mathf.Lerp(frostScript.FrostAmount, minFrost, (mouseX * -removeMult) * Time.deltaTime);
+            }
+            else if (Input.mousePosition.x > Screen.width / 2 && Input.GetAxis("Mouse X") > 0)
+            {
+                float mouseX = Input.GetAxis("Mouse X");
+                mouseX = Mathf.Clamp(mouseX, 0, 1);
+                frostScript.FrostAmount = Mathf.Lerp(frostScript.FrostAmount, minFrost, (Input.GetAxis("Mouse X") * removeMult) * Time.deltaTime);
+            }
         }
         else
         {
             frostScript.FrostAmount = Mathf.Lerp(frostScript.FrostAmount, minFrost, 1 * Time.deltaTime);
         }
-        
 	}
 }

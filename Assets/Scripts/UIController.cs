@@ -11,12 +11,15 @@ public class UIController : MonoBehaviour
     public float creditsRollSpeed;
     public bool isFaded;
     public bool isCredits;
+    public float thanksTimer;
 
     public Image blackFadeImage;
     public Image gradientBlockImage;
     public Color imageColor;
     public GameObject credits;
     public GameObject creditsRoll;
+    public GameObject player;
+    Animator playerAnim;
 
 	// Use this for initialization
 	void Start ()
@@ -31,7 +34,7 @@ public class UIController : MonoBehaviour
         {
             // do all the main scene start calls
             blackFadeImage.color = Color.black;
-
+            playerAnim = player.GetComponent<Animator>();
         }
 	}
 	
@@ -68,6 +71,10 @@ public class UIController : MonoBehaviour
         {
             imageColor.a += fadeSpeed * Time.deltaTime;
             blackFadeImage.color = imageColor;
+            if (playerAnim.speed > 0.1f)
+            {
+                playerAnim.speed -= fadeSpeed * Time.deltaTime;
+            }
         }
         else if (isFaded && blackFadeImage.color.a >= 1)
         {
@@ -80,6 +87,17 @@ public class UIController : MonoBehaviour
                 if (creditsRoll.transform.localPosition.y < 900)
                 {
                     creditsRoll.transform.Translate(Vector2.up * creditsRollSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    if (thanksTimer > 0)
+                    {
+                        thanksTimer -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        SceneManager.LoadScene(0);
+                    }
                 }
             }
         }
